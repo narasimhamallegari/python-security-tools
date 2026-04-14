@@ -19,3 +19,4 @@ Working at the code level makes me a better security professional
 than just knowing how to run Nmap.
 
 *Updated daily.*
+Update README with port scanner documentation 

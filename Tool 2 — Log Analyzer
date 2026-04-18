@@ -1,0 +1,58 @@
+from collections import Counter
+
+# ================================================
+# Log Analyzer
+# Author: Narasimha Mallegari
+# Description: Analyzes Linux auth.log files to
+#              identify and rank failed SSH login
+#              attempts by source IP address.
+# Usage: sudo python3 log_analyzer.py
+# ================================================
+
+print("=" * 50)
+print("  SSH Log Analyzer")
+print("  github.com/narasimhamallegari")
+print("=" * 50)
+
+filename = input("\nEnter log file path (e.g. /var/log/auth.log): ")
+
+failed_ips = []
+failed_count = 0
+success_count = 0
+
+try:
+    with open(filename, "r", errors="ignore") as f:
+        for line in f:
+            if "Failed password" in line:
+                failed_count += 1
+                parts = line.split()
+                for i, part in enumerate(parts):
+                    if part == "from" and i + 1 < len(parts):
+                        failed_ips.append(parts[i + 1])
+            elif "Accepted password" in line or "Accepted publickey" in line:
+                success_count += 1
+
+    print("\n" + "=" * 50)
+    print("  RESULTS")
+    print("=" * 50)
+    print("Failed login attempts:     " + str(failed_count))
+    print("Successful logins:         " + str(success_count))
+    print("Unique attacking IPs:      " + str(len(set(failed_ips))))
+
+    if failed_ips:
+        ip_counts = Counter(failed_ips)
+        print("\nTop attacking IP addresses:")
+        print("-" * 40)
+        for ip, count in ip_counts.most_common(10):
+            bar = "#" * min(count, 30)
+            print("  " + ip.ljust(18) + str(count).rjust(5) + " attempts  " + bar)
+    else:
+        print("\nNo failed login attempts found in this log file.")
+
+    print("\nAnalysis complete.")
+
+except FileNotFoundError:
+    print("\nFile not found: " + filename)
+    print("Try running with sudo for system log files.")
+except PermissionError:
+    print("\nPermission denied. Run with: sudo python3 log_analyzer.py")

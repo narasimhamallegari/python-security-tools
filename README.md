@@ -74,3 +74,19 @@ Learning journal: github.com/narasimhamallegari/cybersecurity-notes
 LinkedIn: https://www.linkedin.com/in/narasimha-mallegari-/
 
 Updated weekly.
+
+### hash_cracker.py
+
+Dictionary attack tool for MD5, SHA1, and SHA256 password hashes.
+
+**Run:** python3 hash_cracker.py
+
+**How it works:** Reads each word from a wordlist, computes all three hash types, and compares to the target. Reports the matching plaintext password.
+
+**Tested with:** rockyou.txt (14 million real leaked passwords). Found "password123" in under 3 seconds.
+
+**What I learned:**
+- How dictionary attacks work at the code level
+- Why MD5 is insecure: billions of attempts per second on consumer hardware
+- Why bcrypt is required: ~100 attempts per second intentionally (100M times slower)
+- Python hashlib, file reading with encoding handling, and large file iteration
